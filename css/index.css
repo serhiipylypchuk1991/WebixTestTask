@@ -1,16 +1,15 @@
 
 .TextAlign{
-  text-align:center; //positioning text in center
+  text-align:center;/*positioning text in center*/
 }
 
 .webix_view .webix_dtable{
-  overflow-y:scroll;
-  background-color:rgb(245, 249, 255);//background color of datatable
+  background-color:rgb(245, 249, 255);/*background color of datatable*/
 }
 
 .GrayBackground{
-  background-color:rgb(230, 233, 237);//background color of list section
+  background-color:rgb(230, 233, 237);/*background color of list section*/
 }
 .GreenText{
-  color:green; //Green text
+  color:green; /*Green text*/
 }

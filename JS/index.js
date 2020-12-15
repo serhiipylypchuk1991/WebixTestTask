@@ -37,7 +37,7 @@ webix.ready(function(){
                 minWidth:250,
                 rows:[
                   {
-                    view:"list",css:'GrayBackground',
+                    view:"list",css:"GrayBackground",
                     template:"#title#",
                     data:[
                       { id:1, title:"Dashboard"},
@@ -91,8 +91,8 @@ webix.ready(function(){
           ]
         },
         {
-             template:'The software is provided by <a href="https://webix.com">https://webix.com</a>. All rights reserved &#169;',
-             css:'TextAlign',
+             template:"The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;",
+             css:"TextAlign",
              height:30,
              width:550
         }
