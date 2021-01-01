@@ -65,12 +65,11 @@ webix.ready(function(){
               data:grid_data
             },
             {
-              view:"form", margin:20,
+              view:"form",
               width:250,
               elements:[
                 {
                   rows:[
-
                     { template:"EDIT FILMS", type:"section"},
                     { view:"text", label:"Title"},
                     { view:"text", label:"Year" },
