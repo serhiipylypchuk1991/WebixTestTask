@@ -74,6 +74,7 @@ webix.ready(function(){
             {view:"resizer"},
             {
               view:"datatable",
+              id:"films_datatable",
               scrollY:true,
               autoConfig:true,
               minWidth:400,
@@ -81,26 +82,88 @@ webix.ready(function(){
             },
             {
               view:"form",
-              width:250,
+              id:"films_form",
+              width:350,
               elements:[
                 {
-                  margin:10,//margin for all elements of rows[]
+                  margin:10,
                   rows:[
                     {template:"EDIT FILMS", type:"section"},
-                    {view:"text", label:"Title"},
-                    {view:"text", label:"Year"},
-                    {view:"text", label:"Rating"},
-                    {view:"text", label:"Votes"},
+                    {view:"text", label:"Title", name:"title", invalidMessage:"Enter Title of Film"},
+                    {view:"text", label:"Year", name:"year", invalidMessage:"Enter year between 1970 and 2021"},
+                    {view:"text", label:"Rating", name:"rating", invalidMessage:"Enter raiting between 1 and 10"},
+                    {view:"text", label:"Votes", name:"votes", invalidMessage:"Enter votes between 0 and 99999"},
                   ]
                 },
                 {
                   margin:20,
                   cols:[
-                    {view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary"},
-                    {view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary"},
+                    {view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary",
+                      click:function(){
+                        if($$("films_form").validate()){
+                            var item = $$("films_form").getValues();
+
+                            item.rank = grid_data.length+1;//add correct rank to item object
+                            grid_data.push(item);//add item object to the grid_data array
+
+                            $$("films_datatable").add(item);
+                            $$("films_form").clear();
+
+                            webix.message({
+                              text:"Data has added successfully",
+                              type:"success",
+                              expire:3000
+                            });
+                        }else{
+                            webix.message({
+                              text:"Please, fill the correct data in the fields of the form",
+                              type:"error",
+                              expire:3000
+                            });
+                        }
+                      }
+                    },
+                    {view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary",
+                      click:function(){
+
+                        $$("films_form").validate();
+
+                        webix.confirm({
+                          title:"Form data would be cleared",
+                          text:"Do you still want to continue?"
+                        }).then(
+                          function(){
+                            //webix.message("Confirmed");
+                            $$("films_form").clear();
+                            $$("films_form").clearValidation();
+                          },
+                          function(){
+                            //webix.message("Rejected");
+                          }
+                        );
+                      }
+                    },
                   ]
                 },{},{}
-              ]
+              ],
+              rules:{
+                title:webix.rules.isNotEmpty,
+                year:function(value){
+                  return (value >= 1970 && value <= 2021);
+                },
+                rating:function(value){
+                  return (value > 0 && value <= 10);
+                },
+                votes:function(value){
+                  if(value == 0 || (value > 0 && value < 100000)){
+                    return value;
+                  }else{return false}
+                }
+              }
+              /*onValidationError:function(key, data){
+                webix.message.position = "bottom";
+                webix.message({text:key.toUpperCase()+"  field is incorrect", type:"error"});
+              }*/
             }
           ]
         },
@@ -112,5 +175,4 @@ webix.ready(function(){
         }
       ]
   });
-
 });
