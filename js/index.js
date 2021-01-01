@@ -11,7 +11,21 @@ webix.ready(function(){
   ];
 
   webix.ui({
+    view:"popup",
+    id:"profile_popup",
+    body:{
+      view:"list",
+      template:"#title#",
+      autoheight:true,
+      autowidth:true,
+      data:[
+        {id:1, title:"Settings"},
+        {id:2, title:"Log Out"}
+      ]
+    }
+  });
 
+  webix.ui({
     rows:[
         {
           view:"toolbar",
@@ -20,11 +34,13 @@ webix.ready(function(){
             {view: "label", label:"My App"},
             {
                view:"button",
+               id:"btn_profile",
                type:"icon",
                icon:"wxi-user",
                label:"Profile",
                css:"webix_transparent",
-               width:100
+               width:100,
+               popup:"profile_popup"
             }
           ]
         },
