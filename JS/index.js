@@ -32,27 +32,29 @@ webix.ready(function(){
         {
           cols:[
             {
-                type:"clean",
-                width:300,
-                minWidth:250,
-                rows:[
-                  {
-                    view:"list",css:"GrayBackground",
-                    template:"#title#",
-                    data:[
-                      { id:1, title:"Dashboard"},
-                      { id:2, title:"Users"},
-                      { id:3, title:"Products"},
-                      { id:4, title:"Locations"}
-                    ]
-                  },
-                  {
-                    template:"<span class='webix_icon mdi mdi-check'></span><span>Connected</span>",
-                    css:"GrayBackground GreenText TextAlign",
-                    height:30,
-                    width:350
-                  }
-                ]
+              type:"clean",
+              width:300,
+              minWidth:250,
+              rows:[
+                {
+                  view:"list",
+                  scroll:false,
+                  css:"GrayBackground",
+                  template:"#title#",
+                  data:[
+                    { id:1, title:"Dashboard"},
+                    { id:2, title:"Users"},
+                    { id:3, title:"Products"},
+                    { id:4, title:"Locations"}
+                  ]
+                },
+                {
+                  template:"<span class='webix_icon mdi mdi-check'></span><span>Connected</span>",
+                  css:"GrayBackground GreenText TextAlign",
+                  height:30,
+                  width:350
+                }
+              ]
             },
             {view:"resizer"},
             {
@@ -63,38 +65,35 @@ webix.ready(function(){
               data:grid_data
             },
             {
-              view:"form",
+              view:"form", margin:20,
               width:250,
               elements:[
                 {
-                    rows:[
-                      { template:"EDIT FILMS", type:"section"},
-                      { view:"text", label:"Title" },
-                      {},
-                      { view:"text", label:"Year" },
-                      {},
-                      { view:"text", label:"Rating" },
-                      {},
-                      { view:"text", label:"Votes" },
-                      {}
-                    ]
+                  rows:[
+
+                    { template:"EDIT FILMS", type:"section"},
+                    { view:"text", label:"Title"},
+                    { view:"text", label:"Year" },
+                    { view:"text", label:"Rating" },
+                    { view:"text", label:"Votes" },
+                  ], margin:10
                 },
                 {
                     cols:[
-                      { view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary"},
-                      {width:20},
-                      { view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary"},
-                    ]
+                    { view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary"},
+                    {width:20},
+                    { view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary"},
+                  ]
                 },{},{}
               ]
             }
           ]
         },
         {
-             template:"The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;",
-             css:"TextAlign",
-             height:30,
-             width:550
+           template:"The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;",
+           css:"TextAlign",
+           height:30,
+           width:550
         }
 
       ]
