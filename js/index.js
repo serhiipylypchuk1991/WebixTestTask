@@ -26,6 +26,7 @@ webix.ready(function(){
     type:"clean",
     width:300,
     minWidth:250,
+    maxWidth:350,
     rows:[
       {
         view:"list",
@@ -52,8 +53,22 @@ webix.ready(function(){
     view:"datatable",
     id:"films_datatable",
     scrollY:true,
-    autoConfig:true,
     minWidth:400,
+
+    columns:[
+      { id:"rank", header:"", width:50 },
+      { id:"title", header:"Title", fillspace:true},
+      { id:"year", header:"Year", width:80 },
+      { id:"rating", header:"Rating", width:70 },
+      //{ id:"edit", template:"{common.editIcon()}"},
+      { id:"del", template:"{common.trashIcon()}", width:60}
+    ],
+    onClick:{
+    	"wxi-trash":function(e, id){
+      	this.remove(id);
+        	return false;
+      }
+    },
     url:dashboard_data_link
   };
   var form = {
