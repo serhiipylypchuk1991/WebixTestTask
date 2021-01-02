@@ -90,9 +90,9 @@ webix.ready(function(){
                   rows:[
                     {template:"EDIT FILMS", type:"section"},
                     {view:"text", label:"Title", name:"title", invalidMessage:"Enter Title of Film"},
-                    {view:"text", label:"Year", name:"year", invalidMessage:"Enter year between 1970 and 2021"},
-                    {view:"text", label:"Rating", name:"rating", invalidMessage:"Enter raiting between 1 and 10"},
-                    {view:"text", label:"Votes", name:"votes", invalidMessage:"Enter votes between 0 and 99999"},
+                    {view:"text", label:"Year", name:"year", invalidMessage:"Enter Year between 1970 and 2021"},
+                    {view:"text", label:"Rating", name:"rating", invalidMessage:"Enter Raiting between 1 and 10"},
+                    {view:"text", label:"Votes", name:"votes", invalidMessage:"Enter Votes between 0 and 99999"},
                   ]
                 },
                 {
@@ -146,7 +146,7 @@ webix.ready(function(){
                   ]
                 },{},{}
               ],
-              rules:{
+              rules:{//ruls for validation
                 title:webix.rules.isNotEmpty,
                 year:function(value){
                   return (value >= 1970 && value <= 2021);
