@@ -170,6 +170,7 @@ webix.ready(function(){
     width:550
   };
 
+  //popup
   webix.ui({
     view:"popup",
     id:"profile_popup",
@@ -185,6 +186,7 @@ webix.ready(function(){
     }
   });
 
+  //maim
   webix.ui({
     id:"app",
     rows:[

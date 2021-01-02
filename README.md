@@ -15,9 +15,10 @@ Tasks:
 3) First cell: Dashboard view (Datatable and form)
     - Load the Datatable data (“data/data.js”) by url - Have done!
 
-    - Enable data editing via Form. This short tutorial may help you: https://webix.com/quick-start/introduction.html#!/1
-    
-    - Enable deleting of datatable records via a “delete” icon in the last datatable column.
-    - Add sorting and filtering to all Datatable columns (as in the picture below)
-    - Make the first column look like the datatable header (same grey background)
-    - Highlight rows when mouse pointer hovers over them
+    - Enable data editing via Form. This short tutorial may help you: https://webix.com/quick-start/introduction.html#!/1 ?
+
+    - Enable deleting of datatable records via a “delete” icon in the last datatable column - Have done!
+
+    - Add sorting and filtering to all Datatable columns (as in the picture below) ?
+    - Make the first column look like the datatable header (same grey background) ?
+    - Highlight rows when mouse pointer hovers over them ?
