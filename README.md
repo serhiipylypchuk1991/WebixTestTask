@@ -11,3 +11,6 @@ Tasks:
 - Have done!
 
 2) Enable switching between Multiview cells using List on the left - Have done!
+
+3) First cell: Dashboard view (Datatable and form)
+    - Load the Datatable data (“data/data.js”) by url - Have done!

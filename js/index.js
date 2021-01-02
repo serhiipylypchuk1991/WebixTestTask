@@ -1,14 +1,10 @@
 
 webix.ready(function(){
 
-  var grid_data = [
-    {id:1, title:"The Shawshank Redemption", year:1994, votes:678790, rating:9.2, rank:1},
-    {id:2, title:"The Godfather", year:1972, votes:511495, rating:9.2, rank:2},
-    {id:3, title:"The Godfather: Part II", year:1974, votes:319352, rating:9.0, rank:3},
-    {id:4, title:"The Good, the Bad and the Ugly", year:1966, votes:213030, rating:8.9, rank:4},
-    {id:5, title:"My Fair Lady", year:1964, votes:533848, rating:8.9, rank:5},
-    {id:6, title:"12 Angry Men", year:1957, votes:164558, rating:8.9, rank:6}
-  ];
+  var dashboard_data_link = "./data/data.js";
+  var users_data_link = "./data/users.js";
+  var products_data_link = "./data/products.js";
+
   var topbar = {
     view:"toolbar",
     css:"webix_dark",
@@ -33,7 +29,7 @@ webix.ready(function(){
     rows:[
       {
         view:"list",
-        id:"menu_list",
+        id:"side_menu_list",
         scroll:false,
         css:"GrayBackground",
         select:true,
@@ -58,7 +54,7 @@ webix.ready(function(){
     scrollY:true,
     autoConfig:true,
     minWidth:400,
-    data:grid_data
+    url:dashboard_data_link
   };
   var form = {
       view:"form",
@@ -83,8 +79,7 @@ webix.ready(function(){
                 if($$("films_form").validate()){
                     var item = $$("films_form").getValues();
 
-                    item.rank = grid_data.length+1;//add correct rank to item object
-                    grid_data.push(item);//add item object to the grid_data array
+                    item.rank = $$("films_datatable").count()+1;//add correct rank to item object (temporary decision)
 
                     $$("films_datatable").add(item);
                     $$("films_form").clear();
@@ -184,5 +179,5 @@ webix.ready(function(){
     ]
   });
 
-  $$("menu_list").select("Dashboard"); //selected by default
+  $$("side_menu_list").select("Dashboard"); //selected by default
 });
