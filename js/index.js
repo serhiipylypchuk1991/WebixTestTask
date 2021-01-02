@@ -52,14 +52,16 @@ webix.ready(function(){
   var data = {
     view:"datatable",
     id:"films_datatable",
+    borderless:false,
     scrollY:true,
     minWidth:400,
-
+    //type:"form",
     columns:[
-      { id:"rank", header:"", width:50, css:"rank"},
-      { id:"title", header:"Title", fillspace:true},
-      { id:"year", header:"Year", width:80},
-      { id:"rating", header:"Rating", width:70 },
+      { id:"rank", header:"", width:50, css:"rank", sort:"int", border:true},
+      { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
+      { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
+      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:70, sort:"int"},
+      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"edit",header:"", template:"{common.editIcon()}", width:60},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],

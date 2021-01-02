@@ -16,9 +16,9 @@
 }
 
 .rank{
-  background-color:rgb(244, 245, 249);
+  background-color:rgb(244, 245, 249);/*background color of rank column*/
 }
 
 .datatable_hover.webix_cell{
-  	background-color:rgb(133, 175, 242);
+  background-color:rgb(133, 175, 242);/*background color of datatable hover rows*/
 }
