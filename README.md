@@ -20,5 +20,7 @@ Tasks:
     - Enable deleting of datatable records via a “delete” icon in the last datatable column - Have done!
 
     - Add sorting and filtering to all Datatable columns (as in the picture below) ?
-    - Make the first column look like the datatable header (same grey background) ?
-    - Highlight rows when mouse pointer hovers over them ?
+
+    - Make the first column look like the datatable header (same grey background) - Have done!
+    
+    - Highlight rows when mouse pointer hovers over them - Have done!

@@ -1,5 +1,5 @@
 
-.TextAlign{
+.text_align{
   text-align:center;/*positioning text in center*/
 }
 
@@ -7,9 +7,18 @@
   background-color:rgb(245, 249, 255);/*background color of datatable*/
 }
 
-.GrayBackground{
+.gray_background{
   background-color:rgb(230, 233, 237);/*background color of list section*/
 }
-.GreenText{
+
+.green_text{
   color:green; /*green text*/
+}
+
+.rank{
+  background-color:rgb(244, 245, 249);
+}
+
+.datatable_hover.webix_cell{
+  	background-color:rgb(133, 175, 242);
 }

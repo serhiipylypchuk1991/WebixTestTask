@@ -32,7 +32,7 @@ webix.ready(function(){
         view:"list",
         id:"side_menu_list",
         scroll:false,
-        css:"GrayBackground",
+        css:"gray_background",
         select:true,
         on:{
           onAfterSelect:function(id){
@@ -43,7 +43,7 @@ webix.ready(function(){
       },
       {
         template:"<span class='webix_icon mdi mdi-check'></span><span>Connected</span>",
-        css:"GrayBackground GreenText TextAlign",
+        css:"gray_background green_text text_align",
         height:30,
         width:350
       }
@@ -56,13 +56,14 @@ webix.ready(function(){
     minWidth:400,
 
     columns:[
-      { id:"rank", header:"", width:50 },
+      { id:"rank", header:"", width:50, css:"rank"},
       { id:"title", header:"Title", fillspace:true},
-      { id:"year", header:"Year", width:80 },
+      { id:"year", header:"Year", width:80},
       { id:"rating", header:"Rating", width:70 },
-      //{ id:"edit", template:"{common.editIcon()}"},
-      { id:"del", template:"{common.trashIcon()}", width:60}
+      { id:"edit",header:"", template:"{common.editIcon()}", width:60},
+      { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],
+    hover:"datatable_hover",
     onClick:{
     	"wxi-trash":function(e, id){
       	this.remove(id);
@@ -165,7 +166,7 @@ webix.ready(function(){
   };
   var bottombar = {
     template:"The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;",
-    css:"TextAlign",
+    css:"text_align",
     height:30,
     width:550
   };
