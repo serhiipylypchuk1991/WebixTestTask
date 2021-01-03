@@ -26,3 +26,11 @@ Tasks:
 
     - Highlight rows when mouse pointer hovers over them - Have done!
 - Have done!
+
+4) Second cell: Users view
+    - Create List and Chart and load the same “data/users.js” to both of them - Have done!
+    - Enable List filtering via a Text input - Have done!
+    - Enable sorting via related buttons - Have done!
+    - Add “Delete” icons to all list items to remove the corresponding items - Have done!
+    - Highlight first 5 items (add some different background to them) - Have done!
+ - Have done!
