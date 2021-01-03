@@ -15,7 +15,7 @@ Tasks:
 3) First cell: Dashboard view (Datatable and form)
     - Load the Datatable data (“data/data.js”) by url - Have done!
 
-    - Enable data editing via Form. This short tutorial may help you: https://webix.com/quick-start/introduction.html#!/1 ?
+    - Enable data editing via Form - Have done!
 
     - Enable deleting of datatable records via a “delete” icon in the last datatable column - Have done!
 

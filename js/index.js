@@ -52,24 +52,64 @@ webix.ready(function(){
   var data = {
     view:"datatable",
     id:"films_datatable",
-    borderless:false,
     scrollY:true,
     minWidth:400,
-    //type:"form",
     columns:[
       { id:"rank", header:"", width:50, css:"rank", sort:"int", border:true},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
       { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"rating", header:["Rating",{ content:"selectFilter"}], width:70, sort:"int"},
-      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
+      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int" //sort of Votes doesn't work correctly!!!
+        //template:(obj)=>{return `${obj.votes.replace(",", ".")}`}
+      },
       { id:"edit",header:"", template:"{common.editIcon()}", width:60},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],
     hover:"datatable_hover",
     onClick:{
-    	"wxi-trash":function(e, id){
-      	this.remove(id);
-        	return false;
+      "wxi-trash":function(e, id){
+        var self=this;
+        webix.confirm({
+          title:"Film data would be deleted",
+          text:"Do you still want to continue?",
+          type:"confirm-warning"
+        }).then(
+          function(){
+
+            webix.message({
+              text:"Element was deleted",
+              type:"info"
+            });
+
+    	      self.remove(id);
+        	  return false;
+          },
+          function(){
+             webix.message("Rejected");
+          }
+        );
+      },
+      "wxi-pencil":function(e, id){
+        var self=this;
+        webix.confirm({
+          title:"Film data would be edited",
+          text:"Do you still want to continue?",
+          type:"confirm-warning"
+        }).then(
+          function(){
+
+            webix.message({
+              text:"Element data is already in form",
+              type:"info"
+            });
+
+            var values = self.getItem(id);
+            $$("films_form").setValues(values);
+          },
+          function(){
+             webix.message("Rejected");
+          }
+        );
       }
     },
     url:dashboard_data_link
@@ -92,46 +132,58 @@ webix.ready(function(){
         {
           margin:20,
           cols:[
-            {view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary",
+            {view:"button", id:"btn_save", value:"Save", css:"webix_primary",
               click:function(){
                 if($$("films_form").validate()){
-                    var item = $$("films_form").getValues();
+                    var datatable = $$("films_datatable");
+                    var item_data = $$("films_form").getValues();
 
-                    item.rank = $$("films_datatable").count()+1;//add correct rank to item object (temporary decision)
+                    if (item_data.id){
+                      datatable.updateItem(item_data.id, item_data);
 
-                    $$("films_datatable").add(item);
+                      webix.message({
+                        text:"Data has edited successfully",
+                        type:"success",
+                        expire:3000
+                      });
+
+                    } else {
+                      item_data.rank = datatable.count()+1;//add correct rank to item object (temporary decision)
+                      datatable.add(item_data);
+
+                      webix.message({
+                        text:"Data has added successfully",
+                        type:"success",
+                        expire:3000
+                      });
+
+                    }
                     $$("films_form").clear();
+                }else{
 
                     webix.message({
-                      text:"Data has added successfully",
-                      type:"success",
-                      expire:3000
-                    });
-                }else{
-                    webix.message({
-                      text:"Please, fill the correct data in the fields of the form",
+                      text:"Please, enter the correct data in the fields of the form",
                       type:"error",
                       expire:3000
                     });
+
                 }
               }
             },
             {view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary",
               click:function(){
-
                 $$("films_form").validate();
-
                 webix.confirm({
-                  title:"Form data would be cleared",
-                  text:"Do you still want to continue?"
+                  title:"Form would be cleared",
+                  text:"Do you still want to continue?",
+                  type:"confirm-warning"
                 }).then(
                   function(){
-                    //webix.message("Confirmed");
                     $$("films_form").clear();
                     $$("films_form").clearValidation();
                   },
                   function(){
-                    //webix.message("Rejected");
+                    webix.message("Rejected");
                   }
                 );
               }
@@ -145,10 +197,11 @@ webix.ready(function(){
           return (value >= 1970 && value <= 2021);
         },
         rating:function(value){
-          return (value > 0 && value <= 10);
+          //console.log(value.replace(",", ".")); //for correct validation of float type
+          return (value.replace(",", ".") > 0 && value.replace(",", ".") <= 10);
         },
         votes:function(value){
-          if(value == 0 || (value > 0 && value < 100000)){
+          if(value == 0 || (value.replace(",", ".") > 0 && value.replace(",", ".") < 100000)){
             return value;
           }else{return false}
         }
@@ -173,7 +226,7 @@ webix.ready(function(){
     width:550
   };
 
-  //popup
+  //popup for profile
   webix.ui({
     view:"popup",
     id:"profile_popup",
@@ -189,7 +242,7 @@ webix.ready(function(){
     }
   });
 
-  //maim
+  //main webix
   webix.ui({
     id:"app",
     rows:[
