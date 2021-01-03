@@ -56,10 +56,10 @@ webix.ready(function(){
     scrollY:true,
     minWidth:400,
     columns:[
-      { id:"rank", header:"", width:50, css:"rank", sort:"int", border:true},
+      { id:"rank", header:"", width:50, css:"rank", sort:"int"},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
       { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
-      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:70, sort:"int"},
+      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},//sort of Rating doesn't work correctly!!!
       { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int" //sort of Votes doesn't work correctly!!!
         //template:(obj)=>{return `${obj.votes.replace(",", ".")}`}
       },
@@ -249,6 +249,7 @@ webix.ready(function(){
         view:"list",
         css:"user_list",
         id:"list",
+        height:300,
         scrollY:true,
         scrollX:false,
         select:true,
@@ -271,6 +272,7 @@ webix.ready(function(){
         type:"bar",
         value:"#age#",
         label:"#age#",
+        minHeight:300,
         tooltip:"User: #name#",
         border:true,
         barWidth:40,
@@ -280,7 +282,7 @@ webix.ready(function(){
         },
         gradient:"falling",
         url:users_data_link
-        },
+      },
       {
         view:"label",
         label: "<span class='gray_text'>Age</span>",
@@ -289,19 +291,36 @@ webix.ready(function(){
       }
     ]
   };
+  var treetable = {
+    view:"treetable",
+    scrollY:true,
+    scrollX:false,
+    select:true,
+    columns:[
+      { id:"id", header:"", css:"treetable_id", width:50},
+      { id:"title",	header:"Title", css:"treetable_title", minWidth:300, template:"{common.treetable()} #title#"},
+      { id:"price",	header:"Price", minWidth:300, css:"treetable_price", fillspace:true}
+    ],
+    url:products_data_link
+  };
   var main = {
     cells:[
     	{ id:"Dashboard", cols:[data,form]},
       { id:"Users", rows:[list,chart]},
-      { id:"Products", template:"Products View"},
+      { id:"Products", rows:[treetable]},
       { id:"Admin", template:"Admin View"}
     ]
   };
   var bottombar = {
-    view:"label",
-    label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
-    align:"center",
-    height:40
+    rows:[
+      { view:"template", height:0.1 },
+      {
+        view:"label",
+        label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
+        align:"center",
+        height:42
+      }
+    ]
   };
 
   //popup for profile
@@ -325,7 +344,13 @@ webix.ready(function(){
     id:"app",
     rows:[
       topbar,
-      {cols:[sidebar, {view:"resizer"}, main]},
+      {
+        cols:[
+          sidebar,
+          {view:"resizer"},
+          main
+        ]
+      },
       bottombar
     ]
   });
