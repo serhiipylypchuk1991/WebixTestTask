@@ -14,6 +14,10 @@
 .green_text{
   color:green; /*green text*/
 }
+.gray_text{
+  color:rgb(148, 147, 143); /*green text*/
+  font-weight:100;
+}
 
 .rank{
   background-color:rgb(244, 245, 249);/*background color of rank column*/
@@ -21,4 +25,16 @@
 
 .datatable_hover.webix_cell{
   background-color:rgb(133, 175, 242);/*background color of datatable hover rows*/
+}
+
+.remove_list_item_btn{
+  width:50px;
+  padding-top:5px;
+  text-align: center;
+  font-weight:bold;
+  float:right;
+}
+
+.user_list > .webix_scroll_cont > div:nth-child(-n+5){/*first 5 elements*/
+  background-color:rgb(237, 197, 88);
 }

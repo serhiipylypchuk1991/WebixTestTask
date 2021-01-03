@@ -10,7 +10,8 @@ Tasks:
       Template for Admin view
 - Have done!
 
-2) Enable switching between Multiview cells using List on the left - Have done!
+2) Enable switching between Multiview cells using List on the left
+- Have done!
 
 3) First cell: Dashboard view (Datatable and form)
     - Load the Datatable data (“data/data.js”) by url - Have done!
@@ -24,3 +25,4 @@ Tasks:
     - Make the first column look like the datatable header (same grey background) - Have done!
 
     - Highlight rows when mouse pointer hovers over them - Have done!
+- Have done!

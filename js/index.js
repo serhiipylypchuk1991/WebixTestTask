@@ -22,7 +22,7 @@ webix.ready(function(){
       }
     ]
   };
-  var side = {
+  var sidebar = {
     type:"clean",
     width:300,
     minWidth:250,
@@ -42,10 +42,11 @@ webix.ready(function(){
         data:[ "Dashboard", "Users", "Products", "Admin"]
       },
       {
-        template:"<span class='webix_icon mdi mdi-check'></span><span>Connected</span>",
-        css:"gray_background green_text text_align",
-        height:30,
-        width:350
+        view:"label",
+        label: "<span class='green_text webix_icon mdi mdi-check'></span><span class='green_text'>Connected</span>",
+        align:"center",
+        height:40,
+        css:"gray_background",
       }
     ]
   };
@@ -211,19 +212,96 @@ webix.ready(function(){
         webix.message({text:key.toUpperCase()+"  field is incorrect", type:"error"});
       }*/
     };
+  var list = {
+    type:"clean",
+    rows:[
+      {
+        height: 35,
+        view:"toolbar",
+        elements:[
+          {
+            view:"text",
+            id:"list_input",
+            on:{
+              onTimedKeyPress:function(){
+                var value = this.getValue().toLowerCase();
+                $$("list").filter(function(obj){
+                    return obj.name.toLowerCase().indexOf(value)==0;
+                })
+              }
+            },
+          },
+          {view:"button", id:"btn_sort_asc", value:"Sort asc", css:"webix_primary", width:120,
+            click:function(){
+              webix.message({text:"Sort asc", expire:350});
+              $$("list").sort("#name#","asc","string");
+            }
+          },
+          {view:"button", id:"btn_sort_desc", value:"Sort desc", css:"webix_primary", width:120,
+            click:function(){
+              webix.message({text:"Sort desc", expire:350});
+              $$("list").sort("#name#","desc","string");
+            }
+          }
+        ]
+      },
+      {
+        view:"list",
+        css:"user_list",
+        id:"list",
+        scrollY:true,
+        scrollX:false,
+        select:true,
+        template:"#name# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
+        onClick:{
+          remove_list_item_btn:function(e, id){
+            this.remove(id);
+            return false;
+          }
+        },
+        url:users_data_link
+      }
+    ]
+  };
+  var chart = {
+    type:"clean",
+    rows:[
+      {
+        view:"chart",
+        type:"bar",
+        value:"#age#",
+        label:"#age#",
+        tooltip:"User: #name#",
+        border:true,
+        barWidth:40,
+        radius:1,
+        xAxis:{
+            template:"#age#"
+        },
+        gradient:"falling",
+        url:users_data_link
+        },
+      {
+        view:"label",
+        label: "<span class='gray_text'>Age</span>",
+        align:"center",
+        height:30
+      }
+    ]
+  };
   var main = {
     cells:[
     	{ id:"Dashboard", cols:[data,form]},
-      { id:"Users", template:"Users View"},
+      { id:"Users", rows:[list,chart]},
       { id:"Products", template:"Products View"},
       { id:"Admin", template:"Admin View"}
     ]
   };
   var bottombar = {
-    template:"The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;",
-    css:"text_align",
-    height:30,
-    width:550
+    view:"label",
+    label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
+    align:"center",
+    height:40
   };
 
   //popup for profile
@@ -247,10 +325,11 @@ webix.ready(function(){
     id:"app",
     rows:[
       topbar,
-      {cols:[side, {view:"resizer"}, main]},
+      {cols:[sidebar, {view:"resizer"}, main]},
       bottombar
     ]
   });
 
   $$("side_menu_list").select("Dashboard"); //selected by default
+
 });
