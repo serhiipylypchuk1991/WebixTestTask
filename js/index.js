@@ -16,8 +16,6 @@ webix.ready(function(){
     body:{
       view:"list",
       template:"#title#",
-      autoheight:true,
-      autowidth:true,
       data:[
         {id:1, title:"Settings"},
         {id:2, title:"Log Out"}
@@ -34,7 +32,6 @@ webix.ready(function(){
             {view: "label", label:"My App"},
             {
                view:"button",
-               id:"btn_profile",
                type:"icon",
                icon:"wxi-user",
                label:"Profile",
@@ -98,16 +95,19 @@ webix.ready(function(){
                 {
                   margin:20,
                   cols:[
-                    {view:"button", id:"btn_add_new", value:"Add new", css:"webix_primary",
+                    {view:"button", value:"Add new", css:"webix_primary",
                       click:function(){
-                        if($$("films_form").validate()){
-                            var item = $$("films_form").getValues();
-
+                        if(films_form.validate()){
+                            var item = films_form.getValues();
+                            var datatable = $$("films_datatable");
                             item.rank = grid_data.length+1;//add correct rank to item object
                             grid_data.push(item);//add item object to the grid_data array
 
-                            $$("films_datatable").add(item);
-                            $$("films_form").clear();
+                            datatable.add(item);
+                            datatable.showItem(item.id);
+                            datatable.select(item.id);
+
+                            films_form.clear();
 
                             webix.message({
                               text:"Data has added successfully",
@@ -123,10 +123,10 @@ webix.ready(function(){
                         }
                       }
                     },
-                    {view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary",
+                    {view:"button", value:"Clear", css:"webix_secondary",
                       click:function(){
 
-                        $$("films_form").validate();
+                        films_form.validate();
 
                         webix.confirm({
                           title:"Form data would be cleared",
@@ -134,8 +134,8 @@ webix.ready(function(){
                         }).then(
                           function(){
                             //webix.message("Confirmed");
-                            $$("films_form").clear();
-                            $$("films_form").clearValidation();
+                            films_form.clear();
+                            films_form.clearValidation();
                           },
                           function(){
                             //webix.message("Rejected");
@@ -175,4 +175,6 @@ webix.ready(function(){
         }
       ]
   });
+
+  var films_form = $$("films_form");
 });
