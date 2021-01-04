@@ -75,21 +75,19 @@ webix.ready(function(){
     hover:"datatable_hover",
     onClick:{
       "wxi-trash":function(e, id){
-        var self=this;
+        
         webix.confirm({
-          //webix.confirm.then(()=>{ this.remove(id)})
           title:"Film data would be deleted",
           text:"Do you still want to continue?",
           type:"confirm-warning"
-        }).then(
-          function(){
+        }).then(() => {
 
             webix.message({
               text:"Element was deleted",
               type:"info"
             });
 
-    	      self.remove(id);
+            this.remove(id);
         	  return false;
           },
           function(){
@@ -98,20 +96,18 @@ webix.ready(function(){
         );
       },
       "wxi-pencil":function(e, id){
-        var self=this;
         webix.confirm({
           title:"Film data would be edited",
           text:"Do you still want to continue?",
           type:"confirm-warning"
-        }).then(
-          function(){
+        }).then(() => {
 
             webix.message({
               text:"Element data is already in form",
               type:"info"
             });
 
-            var values = self.getItem(id);
+            var values = this.getItem(id);
             films_form.setValues(values);
           },
           function(){
@@ -147,7 +143,7 @@ webix.ready(function(){
                     var item_data = films_form.getValues();
 
                     if(datatable.getItem(item_data.id)){
-                      
+
                       datatable.updateItem(item_data.id, item_data);
                       datatable.showItem(item_data.id);
                       datatable.select(item_data.id);
