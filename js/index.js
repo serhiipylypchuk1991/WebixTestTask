@@ -5,6 +5,7 @@ webix.ready(function(){
   var users_data_link = "./data/users.js";
   var products_data_link = "./data/products.js";
 
+
   var topbar = {
     view:"toolbar",
     css:"webix_dark",
@@ -12,7 +13,7 @@ webix.ready(function(){
       {view: "label", label:"My App"},
       {
          view:"button",
-         id:"btn_profile",
+         //id:"btn_profile",
          type:"icon",
          icon:"wxi-user",
          label:"Profile",
@@ -53,6 +54,7 @@ webix.ready(function(){
   var data = {
     view:"datatable",
     id:"films_datatable",
+    select:true,
     scrollY:true,
     minWidth:400,
     columns:[
@@ -60,8 +62,12 @@ webix.ready(function(){
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
       { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},//sort of Rating doesn't work correctly!!!
-      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int" //sort of Votes doesn't work correctly!!!
-        //template:(obj)=>{return `${obj.votes.replace(",", ".")}`}
+      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, //sort of Votes doesn't work correctly!!!
+        template:(obj)=>{return `${Number(obj.votes.replace(",", "."))}`},
+        /*template:function(obj, common){
+            return webix.i18n.numberFormat(obj.votes);
+        },*/
+        sort:"int",
       },
       { id:"edit",header:"", template:"{common.editIcon()}", width:60},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
@@ -71,6 +77,7 @@ webix.ready(function(){
       "wxi-trash":function(e, id){
         var self=this;
         webix.confirm({
+          //webix.confirm.then(()=>{ this.remove(id)})
           title:"Film data would be deleted",
           text:"Do you still want to continue?",
           type:"confirm-warning"
@@ -105,7 +112,7 @@ webix.ready(function(){
             });
 
             var values = self.getItem(id);
-            $$("films_form").setValues(values);
+            films_form.setValues(values);
           },
           function(){
              webix.message("Rejected");
@@ -133,14 +140,17 @@ webix.ready(function(){
         {
           margin:20,
           cols:[
-            {view:"button", id:"btn_save", value:"Save", css:"webix_primary",
+            {view:"button", value:"Save", css:"webix_primary",
               click:function(){
-                if($$("films_form").validate()){
+                if(films_form.validate()){
                     var datatable = $$("films_datatable");
-                    var item_data = $$("films_form").getValues();
+                    var item_data = films_form.getValues();
 
-                    if (item_data.id){
+                    if(datatable.getItem(item_data.id)){
+                      
                       datatable.updateItem(item_data.id, item_data);
+                      datatable.showItem(item_data.id);
+                      datatable.select(item_data.id);
 
                       webix.message({
                         text:"Data has edited successfully",
@@ -151,6 +161,8 @@ webix.ready(function(){
                     } else {
                       item_data.rank = datatable.count()+1;//add correct rank to item object (temporary decision)
                       datatable.add(item_data);
+                      datatable.showItem(item_data.id);
+                      datatable.select(item_data.id);
 
                       webix.message({
                         text:"Data has added successfully",
@@ -159,7 +171,7 @@ webix.ready(function(){
                       });
 
                     }
-                    $$("films_form").clear();
+                    films_form.clear();
                 }else{
 
                     webix.message({
@@ -171,17 +183,17 @@ webix.ready(function(){
                 }
               }
             },
-            {view:"button", id:"btn_clear", value:"Clear", css:"webix_secondary",
+            {view:"button", value:"Clear", css:"webix_secondary",
               click:function(){
-                $$("films_form").validate();
+                films_form.validate();
                 webix.confirm({
                   title:"Form would be cleared",
                   text:"Do you still want to continue?",
                   type:"confirm-warning"
                 }).then(
                   function(){
-                    $$("films_form").clear();
-                    $$("films_form").clearValidation();
+                    films_form.clear();
+                    films_form.clearValidation();
                   },
                   function(){
                     webix.message("Rejected");
@@ -225,22 +237,22 @@ webix.ready(function(){
             on:{
               onTimedKeyPress:function(){
                 var value = this.getValue().toLowerCase();
-                $$("list").filter(function(obj){
-                    return obj.name.toLowerCase().indexOf(value)==0;
+                users_list.filter(function(obj){
+                    return obj.name.toLowerCase().indexOf(value) !== -1;
                 })
               }
             },
           },
-          {view:"button", id:"btn_sort_asc", value:"Sort asc", css:"webix_primary", width:120,
+          {view:"button", value:"Sort asc", css:"webix_primary", width:120,
             click:function(){
               webix.message({text:"Sort asc", expire:350});
-              $$("list").sort("#name#","asc","string");
+              users_list.sort("#name#","asc","string");
             }
           },
-          {view:"button", id:"btn_sort_desc", value:"Sort desc", css:"webix_primary", width:120,
+          {view:"button", value:"Sort desc", css:"webix_primary", width:120,
             click:function(){
               webix.message({text:"Sort desc", expire:350});
-              $$("list").sort("#name#","desc","string");
+              users_list.sort("#name#","desc","string");
             }
           }
         ]
@@ -265,31 +277,20 @@ webix.ready(function(){
     ]
   };
   var chart = {
-    type:"clean",
-    rows:[
-      {
-        view:"chart",
-        type:"bar",
-        value:"#age#",
-        label:"#age#",
-        minHeight:300,
-        tooltip:"User: #name#",
-        border:true,
-        barWidth:40,
-        radius:1,
-        xAxis:{
-            template:"#age#"
-        },
-        gradient:"falling",
-        url:users_data_link
-      },
-      {
-        view:"label",
-        label: "<span class='gray_text'>Age</span>",
-        align:"center",
-        height:30
-      }
-    ]
+    view:"chart",
+    type:"bar",
+    value:"#age#",
+    label:"#name#",
+    minHeight:300,
+    border:true,
+    barWidth:40,
+    radius:1,
+    xAxis:{
+        template:"#age#",
+        title:"Age"
+    },
+    gradient:"falling",
+    url:users_data_link
   };
   var treetable = {
     view:"treetable",
@@ -312,15 +313,10 @@ webix.ready(function(){
     ]
   };
   var bottombar = {
-    rows:[
-      { view:"template", height:0.1 },
-      {
         view:"label",
         label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
         align:"center",
         height:42
-      }
-    ]
   };
 
   //popup for profile
@@ -330,8 +326,6 @@ webix.ready(function(){
     body:{
       view:"list",
       template:"#title#",
-      autoheight:true,
-      autowidth:true,
       data:[
         {id:1, title:"Settings"},
         {id:2, title:"Log Out"}
@@ -354,6 +348,9 @@ webix.ready(function(){
       bottombar
     ]
   });
+
+  var films_form = $$("films_form");
+  var users_list = $$("list");
 
   $$("side_menu_list").select("Dashboard"); //selected by default
 
