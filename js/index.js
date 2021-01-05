@@ -322,6 +322,7 @@ webix.ready(function(){
     id:"profile_popup",
     body:{
       view:"list",
+      autoheight:true,
       template:"#title#",
       data:[
         {id:1, title:"Settings"},
