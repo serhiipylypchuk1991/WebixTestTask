@@ -57,25 +57,26 @@ webix.ready(function(){
     select:true,
     scrollY:true,
     minWidth:400,
+    scheme:{
+        $init:function(obj){
+            obj.votes = Number(obj.votes.replace(",", "."));
+            obj.rating = Number(obj.rating.replace(",", "."));
+            obj.year = Number(obj.year);
+        }
+    },
     columns:[
       { id:"rank", header:"", width:50, css:"rank", sort:"int"},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
       { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},//sort of Rating doesn't work correctly!!!
-      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, //sort of Votes doesn't work correctly!!!
-        template:(obj)=>{return `${Number(obj.votes.replace(",", "."))}`},
-        /*template:function(obj, common){
-            return webix.i18n.numberFormat(obj.votes);
-        },*/
-        sort:"int",
-      },
+      { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"edit",header:"", template:"{common.editIcon()}", width:60},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],
     hover:"datatable_hover",
     onClick:{
       "wxi-trash":function(e, id){
-        
+
         webix.confirm({
           title:"Film data would be deleted",
           text:"Do you still want to continue?",
