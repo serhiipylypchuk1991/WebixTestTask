@@ -16,6 +16,7 @@ webix.ready(function(){
     body:{
       view:"list",
       template:"#title#",
+      autoheight:true,
       data:[
         {id:1, title:"Settings"},
         {id:2, title:"Log Out"}
