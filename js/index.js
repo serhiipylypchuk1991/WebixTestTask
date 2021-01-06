@@ -1,4 +1,3 @@
-
 webix.ready(function(){
 
   var dashboard_data_link = "./data/data.js";
