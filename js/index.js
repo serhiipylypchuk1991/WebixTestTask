@@ -11,6 +11,7 @@ webix.ready(function(){
   ];
 
   webix.ui({
+
     view:"popup",
     id:"profile_popup",
     body:{
@@ -37,8 +38,7 @@ webix.ready(function(){
                icon:"wxi-user",
                label:"Profile",
                css:"webix_transparent",
-               width:100,
-               popup:"profile_popup"
+               width:100
             }
           ]
         },
@@ -72,7 +72,6 @@ webix.ready(function(){
             {view:"resizer"},
             {
               view:"datatable",
-              id:"films_datatable",
               scrollY:true,
               autoConfig:true,
               minWidth:400,
@@ -80,22 +79,22 @@ webix.ready(function(){
             },
             {
               view:"form",
-              id:"films_form",
-              width:350,
+              width:250,
               elements:[
                 {
-                  margin:10,
+                  margin:10,//margin for all elements of rows[]
                   rows:[
                     {template:"EDIT FILMS", type:"section"},
-                    {view:"text", label:"Title", name:"title", invalidMessage:"Enter Title of Film"},
-                    {view:"text", label:"Year", name:"year", invalidMessage:"Enter Year between 1970 and 2021"},
-                    {view:"text", label:"Rating", name:"rating", invalidMessage:"Enter Raiting between 1 and 10"},
-                    {view:"text", label:"Votes", name:"votes", invalidMessage:"Enter Votes between 0 and 99999"},
+                    {view:"text", label:"Title"},
+                    {view:"text", label:"Year"},
+                    {view:"text", label:"Rating"},
+                    {view:"text", label:"Votes"},
                   ]
                 },
                 {
                   margin:20,
                   cols:[
+
                     {view:"button", value:"Add new", css:"webix_primary",
                       click:function(){
                         if(films_form.validate()){
@@ -143,28 +142,11 @@ webix.ready(function(){
                           }
                         );
                       }
-                    },
+                    }
+
                   ]
                 },{},{}
-              ],
-              rules:{//ruls for validation
-                title:webix.rules.isNotEmpty,
-                year:function(value){
-                  return (value >= 1970 && value <= 2021);
-                },
-                rating:function(value){
-                  return (value > 0 && value <= 10);
-                },
-                votes:function(value){
-                  if(value == 0 || (value > 0 && value < 100000)){
-                    return value;
-                  }else{return false}
-                }
-              }
-              /*onValidationError:function(key, data){
-                webix.message.position = "bottom";
-                webix.message({text:key.toUpperCase()+"  field is incorrect", type:"error"});
-              }*/
+              ]
             }
           ]
         },
@@ -175,7 +157,7 @@ webix.ready(function(){
            width:550
         }
       ]
-  });
 
+  });
   var films_form = $$("films_form");
-});
+    });

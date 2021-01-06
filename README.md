@@ -3,24 +3,50 @@ Webix UI Test Task
 See result on http://webixtesttask.pylypchuk-projects.site/
 
 Tasks:
-1. Show a popup on “Profile” button click. It should be located near the button and contain a List with the following data: [ "Settings", "Log out"].
+1) Create a Multiview in the right part of the second row. Multiview should have 4 cells:
+      Ready-made Layout with Datatable and Form (Dashboard view)
+      Template for Users view
+      Template for Products view
+      Template for Admin view
 - Have done!
 
-2. Let users add new films to the datatable via the ready-made form to the left. Form data should be added to the datatable by pressing the “Add” button, which is located below the form fields.
+2) Enable switching between Multiview cells using List on the left
 - Have done!
 
-3. Before adding, validate form data according to the following rules:
-    “title“ must be filled in
-    “year“ should be between 1970 and current
-    “votes“ must be less than 100000
-    “rating“ cannot be empty or 0
+3) First cell: Dashboard view (Datatable and form)
+    - Load the Datatable data (“data/data.js”) by url - Have done!
+
+    - Enable data editing via Form - Have done!
+
+    - Enable deleting of datatable records via a “delete” icon in the last datatable column - Have done!
+
+    - Add sorting and filtering to all Datatable columns (as in the picture below) - Have done!
+
+    - Make the first column look like the datatable header (same grey background) - Have done!
+
+    - Highlight rows when mouse pointer hovers over them - Have done!
 - Have done!
 
-4. If form data is valid, it should be added to the datatable. In addition, show a simple message to indicate that validation is successful.
-- Have done!
+4) Second cell: Users view
+    - Create List and Chart and load the same “data/users.js” to both of them - Have done!
 
-5. If some field doesn't comply to the rules, don’t add form data to the datatable. Instead, show the warning text using the invalidMessage of the related control.
-- Have done!
+    - Enable List filtering via a Text input - Have done!
 
-6. On clicking the Clear button the form should be cleared. Validation marks should be cleared as well. Get user confirmation before clearing. 
-- Have done!
+    - Enable sorting via related buttons - Have done!
+
+    - Add “Delete” icons to all list items to remove the corresponding items - Have done!
+
+    - Highlight first 5 items (add some different background to them) - Have done!
+ - Have done!
+
+ 5) Third cell: Products view, hierarchy
+    - Create a TreeTable with company products - Have done!
+
+    - Load “products.js” - Have done!
+
+    - Provide a template for displaying expand/collapse and folder icons in the “title” column - Have done!
+
+    - Enable cell selection - Have done!
+
+    - Open all branches after data is loaded - Have done!
+ - Have done!
