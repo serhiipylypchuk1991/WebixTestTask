@@ -3,6 +3,7 @@ webix.ready(function(){
   var dashboard_data_link = "./data/data.js";
   var users_data_link = "./data/users.js";
   var products_data_link = "./data/products.js";
+  var categories_data_link = "./data/categories.js";
 
 
   var topbar = {
@@ -58,6 +59,7 @@ webix.ready(function(){
     minWidth:400,
     scheme:{
         $init:function(obj){
+            obj.categoryId = getRandomInt(1,4);
             obj.votes = Number(obj.votes.replace(",", "."));
             obj.rating = Number(obj.rating.replace(",", "."));
             obj.year = Number(obj.year);
@@ -66,10 +68,10 @@ webix.ready(function(){
     columns:[
       { id:"rank", header:"", width:50, css:"rank", sort:"int"},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
+      { id:"categoryId", collection:categories_data_link, header:["Category",{ content:"selectFilter"}], sort:"text",},
       { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
-      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},//sort of Rating doesn't work correctly!!!
+      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},
       { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
-      { id:"edit",header:"", template:"{common.editIcon()}", width:60},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],
     hover:"datatable_hover",
@@ -88,27 +90,7 @@ webix.ready(function(){
             });
 
             this.remove(id);
-        	  return false;
-          },
-          function(){
-             webix.message("Rejected");
-          }
-        );
-      },
-      "wxi-pencil":function(e, id){
-        webix.confirm({
-          title:"Film data would be edited",
-          text:"Do you still want to continue?",
-          type:"confirm-warning"
-        }).then(() => {
-
-            webix.message({
-              text:"Element data is already in form",
-              type:"info"
-            });
-
-            var values = this.getItem(id);
-            films_form.setValues(values);
+            return false;
           },
           function(){
              webix.message("Rejected");
@@ -138,15 +120,13 @@ webix.ready(function(){
           cols:[
             {view:"button", value:"Save", css:"webix_primary",
               click:function(){
+
                 if(films_form.validate()){
-                    var datatable = $$("films_datatable");
                     var item_data = films_form.getValues();
+                    if(item_data.id){
 
-                    if(datatable.getItem(item_data.id)){
-
-                      datatable.updateItem(item_data.id, item_data);
-                      datatable.showItem(item_data.id);
-                      datatable.select(item_data.id);
+                      films_form.save();
+                      datatable.unselectAll();
 
                       webix.message({
                         text:"Data has edited successfully",
@@ -155,10 +135,13 @@ webix.ready(function(){
                       });
 
                     } else {
-                      item_data.rank = datatable.count()+1;//add correct rank to item object (temporary decision)
-                      datatable.add(item_data);
-                      datatable.showItem(item_data.id);
-                      datatable.select(item_data.id);
+                      films_form.save();
+
+                      //custom version how to select and show new added element after .save()
+                      var datatable_obj = datatable.data.pull;
+                      var last_id = Object.keys(datatable_obj)[Object.keys(datatable_obj).length-1];
+                      datatable.showItem(last_id);
+                      //datatable.select(last_id);
 
                       webix.message({
                         text:"Data has added successfully",
@@ -206,7 +189,6 @@ webix.ready(function(){
           return (value >= 1970 && value <= 2021);
         },
         rating:function(value){
-          //console.log(value.replace(",", ".")); //for correct validation of float type
           return (value.replace(",", ".") > 0 && value.replace(",", ".") <= 10);
         },
         votes:function(value){
@@ -215,10 +197,6 @@ webix.ready(function(){
           }else{return false}
         }
       }
-      /*onValidationError:function(key, data){
-        webix.message.position = "bottom";
-        webix.message({text:key.toUpperCase()+"  field is incorrect", type:"error"});
-      }*/
     };
   var list = {
     type:"clean",
@@ -346,8 +324,16 @@ webix.ready(function(){
     ]
   });
 
+  var datatable = $$("films_datatable");
   var films_form = $$("films_form");
   var users_list = $$("list");
+  films_form.bind(datatable);
+
+  function getRandomInt(min,max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //Включаючи мінімум та максимум
+  }
 
   $$("side_menu_list").select("Dashboard"); //selected by default
 
