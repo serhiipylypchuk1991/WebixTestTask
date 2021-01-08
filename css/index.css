@@ -34,8 +34,12 @@
   float:right;
 }
 
-.user_list > .webix_scroll_cont > div:nth-child(-n+5){/*first 5 elements*/
+/*.user_list > .webix_scroll_cont > div:nth-child(-n+5){/*first 5 elements
   background-color:rgb(237, 197, 88);
+}*/
+
+.young_users{
+    background-color:rgb(237, 197, 88);
 }
 
 .treetable_price{

@@ -1,11 +1,14 @@
 webix.ready(function(){
-
+//Links and Data!!!
   var dashboard_data_link = "./data/data.js";
   var users_data_link = "./data/users.js";
   var products_data_link = "./data/products.js";
   var categories_data_link = "./data/categories.js";
 
-
+  var countries_data = new webix.DataCollection({
+    url:"./data/countries.js"
+  });
+//Components!!!
   var topbar = {
     view:"toolbar",
     css:"webix_dark",
@@ -13,7 +16,6 @@ webix.ready(function(){
       {view: "label", label:"My App"},
       {
          view:"button",
-         //id:"btn_profile",
          type:"icon",
          icon:"wxi-user",
          label:"Profile",
@@ -60,18 +62,20 @@ webix.ready(function(){
     scheme:{
         $init:function(obj){
             obj.categoryId = getRandomInt(1,4);
+            obj.rank = datatable.data.order.length;//Like variant
+            //obj.rank = Number(obj.rank);
             obj.votes = Number(obj.votes.replace(",", "."));
             obj.rating = Number(obj.rating.replace(",", "."));
             obj.year = Number(obj.year);
         }
     },
     columns:[
-      { id:"rank", header:"", width:50, css:"rank", sort:"int"},
+      { id:"rank", header:"#", width:50, css:"rank", sort:"int"},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
       { id:"categoryId", collection:categories_data_link, header:["Category",{ content:"selectFilter"}], sort:"text",},
-      { id:"year", header:["Year",{ content:"textFilter"}], width:80, sort:"int"},
-      { id:"rating", header:["Rating",{ content:"selectFilter"}], width:80, sort:"int"},
+      { id:"rating", header:["Rating",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
+      { id:"year", header:"Year", width:80, sort:"int"},
       { id:"del", header:"", template:"{common.trashIcon()}", width:60}
     ],
     hover:"datatable_hover",
@@ -99,6 +103,22 @@ webix.ready(function(){
       }
     },
     url:dashboard_data_link
+  };
+
+  //Like a variant of tab Filtering
+  var segmented_tab ={
+      view:"segmented", id:"selector", inputWidth:500,
+      options:[
+        {id:1, value:"All"},//All
+        {id:2, value:"Old"},//<=2000
+        {id:3, value:"Modern"},//>2000 && <=2005
+        {id:4, value:"New"}//>2005
+      ],
+      on:{
+        onChange:function(){
+          datatable.filterByAll();
+        }
+      }
   };
   var form = {
       view:"form",
@@ -138,10 +158,7 @@ webix.ready(function(){
                       films_form.save();
 
                       //custom version how to select and show new added element after .save()
-                      var datatable_obj = datatable.data.pull;
-                      var last_id = Object.keys(datatable_obj)[Object.keys(datatable_obj).length-1];
-                      datatable.showItem(last_id);
-                      //datatable.select(last_id);
+                      scrollToLastAddedElement(datatable,true,false);
 
                       webix.message({
                         text:"Data has added successfully",
@@ -198,73 +215,98 @@ webix.ready(function(){
         }
       }
     };
+
+  //For list editing ability
+  webix.protoUI({
+    name:"editlist"
+  }, webix.EditAbility, webix.ui.list);
+
   var list = {
-    type:"clean",
-    rows:[
+    view:"editlist",
+    id:"users_list",
+    scheme:{
+        $init:function(obj){
+            if(obj.age < 26){
+              obj.$css = "young_users";
+            }
+        }
+    },
+    editable:true,
+    editor:"text",
+    editValue:"name",
+    template:"#name#, #age#, <span> from </span>#country#",
+    height:300,
+    scrollY:true,
+    scrollX:false,
+    select:true,
+    rules:{
+      name:webix.rules.isNotEmpty
+    },
+    onClick:{
+      remove_list_item_btn:function(e, id){
+        this.remove(id);
+        return false;
+      }
+    },
+    url:users_data_link
+  };
+  var list_toolbar = {
+    height: 35,
+    view:"toolbar",
+    elements:[
       {
-        height: 35,
-        view:"toolbar",
-        elements:[
-          {
-            view:"text",
-            id:"list_input",
-            on:{
-              onTimedKeyPress:function(){
-                var value = this.getValue().toLowerCase();
-                users_list.filter(function(obj){
-                    return obj.name.toLowerCase().indexOf(value) !== -1;
-                })
-              }
-            },
-          },
-          {view:"button", value:"Sort asc", css:"webix_primary", width:120,
-            click:function(){
-              webix.message({text:"Sort asc", expire:350});
-              users_list.sort("#name#","asc","string");
-            }
-          },
-          {view:"button", value:"Sort desc", css:"webix_primary", width:120,
-            click:function(){
-              webix.message({text:"Sort desc", expire:350});
-              users_list.sort("#name#","desc","string");
-            }
+        view:"text",
+        id:"list_input",
+        on:{
+          onTimedKeyPress:function(){
+            var value = this.getValue().toLowerCase();
+            users_list.filter(function(obj){
+                return obj.name.toLowerCase().indexOf(value) !== -1;
+            });
           }
-        ]
+        }
       },
-      {
-        view:"list",
-        css:"user_list",
-        id:"list",
-        height:300,
-        scrollY:true,
-        scrollX:false,
-        select:true,
-        template:"#name# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
-        onClick:{
-          remove_list_item_btn:function(e, id){
-            this.remove(id);
-            return false;
-          }
-        },
-        url:users_data_link
+      {view:"button", value:"Sort asc", css:"webix_primary", width:120,
+        click:function(){
+          webix.message({text:"Sort asc", expire:350});
+          users_list.sort("#name#","asc","string");
+        }
+      },
+      {view:"button", value:"Sort desc", css:"webix_primary", width:120,
+        click:function(){
+          webix.message({text:"Sort desc", expire:350});
+          users_list.sort("#name#","desc","string");
+        }
+      },
+      {view:"button", value:"Add new", css:"webix_primary", width:120,
+        click:function(){
+          webix.message({text:"New user was added", expire:350});
+
+          users_list.add({name:"John Smit", age:getRandomInt(18,60), country:countries_data.data.pull[getRandomInt(1,8)]["value"]});
+
+          //custom version how to select and show new added element
+          scrollToLastAddedElement(users_list,true,true);
+        }
       }
     ]
   };
   var chart = {
     view:"chart",
+    id:"users_chart",
     type:"bar",
     value:"#age#",
-    label:"#name#",
     minHeight:300,
-    border:true,
     barWidth:40,
     radius:1,
     xAxis:{
-        template:"#age#",
-        title:"Age"
+      template:"#country#",
+      title:"Country"
     },
-    gradient:"falling",
-    url:users_data_link
+    yAxis:{
+      start:0,
+      end:10,
+      step:2
+    }
   };
   var treetable = {
     view:"treetable",
@@ -280,8 +322,8 @@ webix.ready(function(){
   };
   var main = {
     cells:[
-    	{ id:"Dashboard", cols:[data,form]},
-      { id:"Users", rows:[list,chart]},
+    	{ id:"Dashboard",cols:[{rows:[segmented_tab,data]},form]},
+      { id:"Users", rows:[list_toolbar,list,chart]},
       { id:"Products", rows:[treetable]},
       { id:"Admin", template:"Admin View"}
     ]
@@ -293,7 +335,7 @@ webix.ready(function(){
         height:42
   };
 
-  //popup for profile
+  //popup for profile button
   webix.ui({
     view:"popup",
     id:"profile_popup",
@@ -324,17 +366,72 @@ webix.ready(function(){
     ]
   });
 
+//Component links
   var datatable = $$("films_datatable");
   var films_form = $$("films_form");
-  var users_list = $$("list");
+  var users_list = $$("users_list");
+  var users_chart = $$("users_chart");
+
   films_form.bind(datatable);
 
-  function getRandomInt(min,max) {
+//Custom functions
+  //return number in range between min and max value
+  function getRandomInt(min,max){
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; //Включаючи мінімум та максимум
+    return Math.floor(Math.random()*(max-min+1))+min;
   }
 
-  $$("side_menu_list").select("Dashboard"); //selected by default
+  //scroll to last added element of list or datatable
+  function scrollToLastAddedElement(component,show,select){
+    var data_obj = component.data.pull;
+    var last_id = Object.keys(data_obj)[Object.keys(data_obj).length-1];
+      if(last_id){
+        if(show === true && select === true){
+          component.showItem(last_id);
+          component.select(last_id);
+        }else{
+          component.showItem(last_id);
+        }
+      }else{console.log("Incorrect last_id");}
+  }
+
+  //sync from list to chart
+  users_chart.sync(
+    users_list,
+    function(){
+      users_chart.group({
+        	by:"country",
+        	map:{
+            age:[ "country","count"]
+          }
+      });
+    }
+  );
+
+  $$("side_menu_list").select("Dashboard"); //selected tab element by default
+
+  //filter for tab datatable filtering of years
+  datatable.registerFilter(
+    $$("selector"),
+    { columnId:"year", compare:function(value, filter, item){
+      console.log(filter);
+      if(filter == 1){
+        return value;
+      }else if(filter == 2){
+        return value <= 2000;
+      }else if(filter == 3) {
+        return value > 2000 && value <= 2005;
+      }else return value > 2005;
+    }},
+    {
+      getValue:function(node){
+        return node.getValue();
+      },
+      setValue:function(node, value){
+        node.setValue(value);
+      }
+    }
+  );
 
 });
