@@ -62,7 +62,8 @@ webix.ready(function(){
     scheme:{
         $init:function(obj){
             obj.categoryId = getRandomInt(1,4);
-            obj.rank = datatable.data.order.length;//Like variant
+            obj.rank = this.count();//Like variant
+            //obj.rank = datatable.data.order.length;//Like variant
             //obj.rank = Number(obj.rank);
             obj.votes = Number(obj.votes.replace(",", "."));
             obj.rating = Number(obj.rating.replace(",", "."));
@@ -225,11 +226,11 @@ webix.ready(function(){
     view:"editlist",
     id:"users_list",
     scheme:{
-        $init:function(obj){
-            if(obj.age < 26){
-              obj.$css = "young_users";
-            }
+      $init:function(obj){
+        if(obj.age < 26){
+          obj.$css = "young_users";
         }
+      }
     },
     editable:true,
     editor:"text",
@@ -310,16 +311,49 @@ webix.ready(function(){
   };
   var treetable = {
     view:"treetable",
+    id:"tree",
+    scheme:{
+      $init:function(obj){
+        obj.open = true;
+      }
+    },
     scrollY:true,
     scrollX:false,
     select:true,
     columns:[
       { id:"id", header:"", css:"treetable_id", width:50},
-      { id:"title",	header:"Title", css:"treetable_title", minWidth:300, template:"{common.treetable()} #title#"},
-      { id:"price",	header:"Price", minWidth:300, css:"treetable_price", fillspace:true}
+      { id:"title",	header:"Title", editor:"text", css:"treetable_title", minWidth:300, liveEdit:true, template:"{common.treetable()} #title#"},
+      { id:"price",	header:"Price", editor:"text", minWidth:300, css:"treetable_price", liveEdit:true, fillspace:true}
     ],
+    on:{
+      onLiveEdit:function(state, editor){
+        if(editor.column === "price"){
+          if (!(state.value > 0 && state.value <= 100) || !webix.rules.isNumber(state.value)){
+            this.addRowCss(editor.row, "treetable_edit_ruls");
+          }else{
+            this.removeRowCss(editor.row, "treetable_edit_ruls");
+          }
+        }else if(editor.column === "title"){//can use just else
+          if (!titleValidation(state.value,20)){
+            this.addRowCss(editor.row, "treetable_edit_ruls");
+          }else{
+            this.removeRowCss(editor.row, "treetable_edit_ruls");
+          }
+        }
+      }
+    },
+    editable:true,
+    rules:{
+      title:function(value){
+        return  titleValidation(value,20);
+      },
+      price:function(value){
+        return (value > 0 && value <= 100 && webix.rules.isNumber(value));
+      }
+    },
     url:products_data_link
   };
+
   var main = {
     cells:[
     	{ id:"Dashboard",cols:[{rows:[segmented_tab,data]},form]},
@@ -372,6 +406,7 @@ webix.ready(function(){
   var users_list = $$("users_list");
   var users_chart = $$("users_chart");
 
+//Binding components
   films_form.bind(datatable);
 
 //Custom functions
@@ -396,6 +431,17 @@ webix.ready(function(){
       }else{console.log("Incorrect last_id");}
   }
 
+  //title validation function
+  function titleValidation(value,rightLength){
+		var regExpResolt = value.search(/[\§\<\>@#\$\^&\*\+=\\~\[\]\{\}\|_]/g),
+			  argLength = value.length;
+		if(regExpResolt === -1 && argLength >= 1 && argLength <= rightLength){
+			return value;
+		}else{
+      return false;
+    }
+	}
+
   //sync from list to chart
   users_chart.sync(
     users_list,
@@ -415,7 +461,7 @@ webix.ready(function(){
   datatable.registerFilter(
     $$("selector"),
     { columnId:"year", compare:function(value, filter, item){
-      console.log(filter);
+      //console.log(filter);
       if(filter == 1){
         return value;
       }else if(filter == 2){
