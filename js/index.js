@@ -7,7 +7,8 @@ webix.ready(function(){
 
   var countries_data = new webix.DataCollection({
     url:"./data/countries.js"
-  });
+  });//Load data from js file
+
 //Components!!!
   var topbar = {
     view:"toolbar",
@@ -311,7 +312,7 @@ webix.ready(function(){
   };
   var treetable = {
     view:"treetable",
-    id:"tree",
+    //id:"tree",
     scheme:{
       $init:function(obj){
         obj.open = true;
@@ -363,10 +364,10 @@ webix.ready(function(){
     ]
   };
   var bottombar = {
-        view:"label",
-        label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
-        align:"center",
-        height:42
+    view:"label",
+    label: "<span class='gray_text'>The software is provided by <a href='https://webix.com'>https://webix.com</a>. All rights reserved &#169;</span>",
+    align:"center",
+    height:42
   };
 
   //popup for profile button
