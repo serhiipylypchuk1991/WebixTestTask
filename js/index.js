@@ -236,7 +236,7 @@ webix.ready(function(){
     editable:true,
     editor:"text",
     editValue:"name",
-    template:"#name#, #age#, <span> from </span>#country#",
+    template:"#name#, #age#, <span> from </span>#country# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
     height:300,
     scrollY:true,
     scrollX:false,
@@ -461,16 +461,17 @@ webix.ready(function(){
   //filter for tab datatable filtering of years
   datatable.registerFilter(
     $$("selector"),
-    { columnId:"year", compare:function(value, filter, item){
-      //console.log(filter);
-      if(filter == 1){
-        return value;
-      }else if(filter == 2){
-        return value <= 2000;
-      }else if(filter == 3) {
-        return value > 2000 && value <= 2005;
-      }else return value > 2005;
-    }},
+    { columnId:"year",
+      compare:function(value, filter, item){
+        if(filter == 1){
+          return value;
+        }else if(filter == 2){
+          return value <= 2000;
+        }else if(filter == 3) {
+          return value > 2000 && value <= 2005;
+        }else return value > 2005;
+      }
+    },
     {
       getValue:function(node){
         return node.getValue();
