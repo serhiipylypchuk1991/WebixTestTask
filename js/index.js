@@ -1,13 +1,24 @@
 webix.ready(function(){
 //Links and Data!!!
   var dashboard_data_link = "./data/data.js";
-  var users_data_link = "./data/users.js";
   var products_data_link = "./data/products.js";
+  var users_data_link = "./data/users.js";
   var categories_data_link = "./data/categories.js";
 
-  var countries_data = new webix.DataCollection({
+//Data collections
+  var users_data_collection = new webix.DataCollection({
+    url:"./data/users.js"
+  });//Load data from js file users.js
+
+  var categories_data_collection = new webix.DataCollection({
+    url:"./data/categories.js"
+  });//Load data from js file categories.js
+
+  //console.log(categories_data_collection);
+
+  var countries_data_collection = new webix.DataCollection({
     url:"./data/countries.js"
-  });//Load data from js file
+  });//Load data from js file countries.js
 
 //Components!!!
   var topbar = {
@@ -61,20 +72,20 @@ webix.ready(function(){
     scrollY:true,
     minWidth:400,
     scheme:{
-        $init:function(obj){
-            obj.categoryId = getRandomInt(1,4);
-            obj.rank = this.count();//Like variant
-            //obj.rank = datatable.data.order.length;//Like variant
-            //obj.rank = Number(obj.rank);
-            obj.votes = Number(obj.votes.replace(",", "."));
-            obj.rating = Number(obj.rating.replace(",", "."));
-            obj.year = Number(obj.year);
-        }
+      $init:function(obj){
+        obj.categoryId = getRandomInt(1,4);
+        obj.rank = this.count();//Like variant
+        //obj.rank = datatable.data.order.length;//Like variant
+        //obj.rank = Number(obj.rank);
+        obj.votes = Number(obj.votes.replace(",", "."));
+        obj.rating = Number(obj.rating.replace(",", "."));
+        obj.year = Number(obj.year);
+      }
     },
     columns:[
       { id:"rank", header:"#", width:50, css:"rank", sort:"int"},
       { id:"title", header:["Film title",{ content:"textFilter"}], fillspace:true, sort:"text"},
-      { id:"categoryId", collection:categories_data_link, header:["Category",{ content:"selectFilter"}], sort:"text",},
+      { id:"categoryId", collection:categories_data_collection, header:["Category",{ content:"selectFilter"}], sort:"text",},
       { id:"rating", header:["Rating",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"votes", header:["Votes",{ content:"textFilter"}], width:80, sort:"int"},
       { id:"year", header:"Year", width:80, sort:"int"},
@@ -135,6 +146,7 @@ webix.ready(function(){
             {view:"text", label:"Year", name:"year", invalidMessage:"Enter Year between 1970 and 2021"},
             {view:"text", label:"Rating", name:"rating", invalidMessage:"Enter Raiting between 1 and 10"},
             {view:"text", label:"Votes", name:"votes", invalidMessage:"Enter Votes between 0 and 99999"},
+            {view:"richselect", label:"Category", name:"categoryId", options:categories_data_collection}
           ]
         },
         {
@@ -219,9 +231,7 @@ webix.ready(function(){
     };
 
   //For list editing ability
-  webix.protoUI({
-    name:"editlist"
-  }, webix.EditAbility, webix.ui.list);
+  webix.protoUI({name:"editlist"}, webix.EditAbility, webix.ui.list);
 
   var list = {
     view:"editlist",
@@ -236,7 +246,7 @@ webix.ready(function(){
     editable:true,
     editor:"text",
     editValue:"name",
-    template:"#name#, #age#, <span> from </span>#country#",
+    template:"#name#, #age#, <span> from </span>#country# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
     height:300,
     scrollY:true,
     scrollX:false,
@@ -246,11 +256,11 @@ webix.ready(function(){
     },
     onClick:{
       remove_list_item_btn:function(e, id){
-        this.remove(id);
+        users_data_collection.remove(id);
         return false;
       }
     },
-    url:users_data_link
+    //url:users_data_link
   };
   var list_toolbar = {
     height: 35,
@@ -284,7 +294,7 @@ webix.ready(function(){
         click:function(){
           webix.message({text:"New user was added", expire:350});
 
-          users_list.add({name:"John Smit", age:getRandomInt(18,60), country:countries_data.data.pull[getRandomInt(1,8)]["value"]});
+          users_data_collection.add({name:"John Smit", age:getRandomInt(18,60), country:countries_data_collection.data.pull[getRandomInt(1,8)]["value"]});
 
           //custom version how to select and show new added element
           scrollToLastAddedElement(users_list,true,true);
@@ -354,13 +364,46 @@ webix.ready(function(){
     },
     url:products_data_link
   };
-
+  var admin_categories = {
+    view:"datatable",
+    id:"admin_categories",
+    scrollX:false,
+    select:true,
+    editable:true,
+    editaction:"dblclick",
+    columns:[
+      { id:"value",	header:"Category", fillspace:true, editor:"text"}
+    ],
+    rules:{
+      value:function(val){
+        return  titleValidation(val,20);
+      }
+    }
+  };
+  var admin_categories_toolbar = {
+    view:"toolbar",
+    cols:[
+      { view:"button", value:"Add new", css:"webix_primary",
+        click:function(){
+          categories_data_collection.add({value:"New category"});
+        }
+      },
+      { view:"button", value:"Remove selected",
+        click:function(){
+          var selected = admin_categories.getSelectedId();
+          if(selected){
+            categories_data_collection.remove(selected);
+          }
+        }
+      }
+    ]
+  };
   var main = {
     cells:[
     	{ id:"Dashboard",cols:[{rows:[segmented_tab,data]},form]},
       { id:"Users", rows:[list_toolbar,list,chart]},
       { id:"Products", rows:[treetable]},
-      { id:"Admin", template:"Admin View"}
+      { id:"Admin", rows:[admin_categories_toolbar,admin_categories]}
     ]
   };
   var bottombar = {
@@ -406,6 +449,7 @@ webix.ready(function(){
   var films_form = $$("films_form");
   var users_list = $$("users_list");
   var users_chart = $$("users_chart");
+  var admin_categories = $$("admin_categories");
 
 //Binding components
   films_form.bind(datatable);
@@ -443,9 +487,22 @@ webix.ready(function(){
     }
 	}
 
-  //sync from list to chart
+//Sync operations
+  users_list.sync(
+    users_data_collection,
+    function(){
+      users_list.filter(function(obj){
+        if(obj.age < 26){
+          obj.$css = "young_users";
+          return true;
+        }else{
+          return true;
+        }
+      });
+    }
+  );
   users_chart.sync(
-    users_list,
+    users_data_collection,
     function(){
       users_chart.group({
         	by:"country",
@@ -455,6 +512,7 @@ webix.ready(function(){
       });
     }
   );
+  admin_categories.sync(categories_data_collection);
 
   $$("side_menu_list").select("Dashboard"); //selected tab element by default
 
