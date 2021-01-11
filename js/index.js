@@ -520,15 +520,15 @@ webix.ready(function(){
   datatable.registerFilter(
     $$("selector"),
     { columnId:"year", compare:function(value, filter, item){
-      //console.log(filter);
-      if(filter == 1){
-        return value;
-      }else if(filter == 2){
-        return value <= 2000;
-      }else if(filter == 3) {
-        return value > 2000 && value <= 2005;
-      }else return value > 2005;
-    }},
+        if(filter == 1){
+          return value;
+        }else if(filter == 2){
+          return value <= 2000;
+        }else if(filter == 3) {
+          return value > 2000 && value <= 2005;
+        }else return value > 2005;
+      }
+    },
     {
       getValue:function(node){
         return node.getValue();
