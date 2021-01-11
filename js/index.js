@@ -242,6 +242,7 @@ webix.ready(function(){
     },
     editable:true,
     editor:"text",
+    editaction:"dblclick",
     editValue:"name",
     template:"#name#, #age#, <span> from </span>#country# <span class='remove_list_item_btn webix_icon mdi mdi-close'></span>",
     height:300,
@@ -558,5 +559,5 @@ webix.ready(function(){
       }
     }
   );
-
-});
+}
+);
