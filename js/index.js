@@ -353,6 +353,16 @@ webix.ready(function(){
         if ( this.getItem(id).$level === 1){
           return false; //!!! cencel editing in whole row of 1 level
         }
+      },
+      onBeforeEditStart:function(id){
+        if ( this.getItem(id).$level === 1 && id.column == "price"){
+          return false;
+        }
+      },
+      onValidationError:function(id, obj, details){
+        if(details.price === true){
+          return false;
+        }
       }
     },
     editable:true,
