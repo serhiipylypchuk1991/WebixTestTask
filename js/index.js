@@ -74,9 +74,6 @@ webix.ready(function(){
     scheme:{
       $init:function(obj){
         obj.categoryId = getRandomInt(1,4);
-        obj.rank = this.count();//Like variant
-        //obj.rank = datatable.data.order.length;//Like variant
-        //obj.rank = Number(obj.rank);
         obj.votes = Number(obj.votes.replace(",", "."));
         obj.rating = Number(obj.rating.replace(",", "."));
         obj.year = Number(obj.year);
@@ -256,8 +253,24 @@ webix.ready(function(){
     },
     onClick:{
       remove_list_item_btn:function(e, id){
-        users_data_collection.remove(id);
-        return false;
+        webix.confirm({
+          title:"Film data would be deleted",
+          text:"Do you still want to continue?",
+          type:"confirm-warning"
+        }).then(() => {
+
+            webix.message({
+              text:"Element was deleted",
+              type:"info"
+            });
+
+            users_data_collection.remove(id);
+            return false;
+          },
+          function(){
+             webix.message("Rejected");
+          }
+        );
       }
     },
     //url:users_data_link
@@ -322,12 +335,6 @@ webix.ready(function(){
   };
   var treetable = {
     view:"treetable",
-    //id:"tree",
-    scheme:{
-      $init:function(obj){
-        obj.open = true;
-      }
-    },
     scrollY:true,
     scrollX:false,
     select:true,
@@ -351,6 +358,11 @@ webix.ready(function(){
             this.removeRowCss(editor.row, "treetable_edit_ruls");
           }
         }
+      },
+      onBeforeEditStart:function(id,state){
+        if ( this.getItem(id).$level === 1){
+          return false; //!!! cencel editing in whole row of 1 level
+        }
       }
     },
     editable:true,
@@ -361,6 +373,9 @@ webix.ready(function(){
       price:function(value){
         return (value > 0 && value <= 100 && webix.rules.isNumber(value));
       }
+    },
+    ready:function(){
+      this.openAll();
     },
     url:products_data_link
   };
