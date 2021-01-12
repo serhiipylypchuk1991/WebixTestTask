@@ -240,14 +240,6 @@ webix.ready(function(){
   var list = {
     view:"editlist",
     id:"users_list",
-    scheme:{
-      $init:function(obj){
-        console.log(obj);
-        if(obj.age < 26){
-          obj.$css = "young_users";
-        }
-      }
-    },
     editable:true,
     editor:"text",
     editaction:"dblclick",
