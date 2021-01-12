@@ -7,7 +7,14 @@ webix.ready(function(){
 
 //Data collections
   var users_data_collection = new webix.DataCollection({
-    url:"./data/users.js"
+    url:"./data/users.js",
+    scheme:{
+      $init:function(obj){
+        if(obj.age < 26){
+          obj.$css = "young_users";
+        }
+      }
+    }
   });//Load data from js file users.js
 
   var categories_data_collection = new webix.DataCollection({
@@ -235,6 +242,7 @@ webix.ready(function(){
     id:"users_list",
     scheme:{
       $init:function(obj){
+        console.log(obj);
         if(obj.age < 26){
           obj.$css = "young_users";
         }
@@ -407,14 +415,33 @@ webix.ready(function(){
       { view:"button", value:"Add new", css:"webix_primary",
         click:function(){
           categories_data_collection.add({value:"New category"});
+          scrollToLastAddedElement(admin_categories,true,true);
         }
       },
       { view:"button", value:"Remove selected",
         click:function(){
-          var selected = admin_categories.getSelectedId();
-          if(selected){
-            categories_data_collection.remove(selected);
-          }
+
+          webix.confirm({
+            title:"Category data would be deleted",
+            text:"Do you still want to continue?",
+            type:"confirm-warning"
+          }).then(() => {
+
+              webix.message({
+                text:"Element was deleted",
+                type:"info"
+              });
+
+              var selected = admin_categories.getSelectedId();
+              if(selected){
+                categories_data_collection.remove(selected);
+              }
+            },
+            function(){
+               webix.message("Rejected");
+            }
+          );
+
         }
       }
     ]
@@ -510,8 +537,8 @@ webix.ready(function(){
 
 //Sync operations
   users_list.sync(
-    users_data_collection,
-    function(){
+    users_data_collection
+    /*function(){
       users_list.filter(function(obj){
         if(obj.age < 26){
           obj.$css = "young_users";
@@ -520,7 +547,7 @@ webix.ready(function(){
           return true;
         }
       });
-    }
+    }*/
   );
   users_chart.sync(
     users_data_collection,
