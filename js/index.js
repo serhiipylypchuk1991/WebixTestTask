@@ -7,7 +7,7 @@ webix.ready(function(){
 
   var countries_data = new webix.DataCollection({
     url:"./data/countries.js"
-  });//Load data from js file
+  });//Load data from js
 
 //Components!!!
   var topbar = {
